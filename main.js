@@ -8,6 +8,7 @@ const merchantsView = document.querySelector("#merchants-view")
 const merchantsNavButton = document.querySelector("#merchants-nav")
 const itemsNavButton = document.querySelector("#items-nav")
 const addNewButton = document.querySelector("#add-new-button")
+const sortButton = document.getElementById("sort-button")
 const showingText = document.querySelector("#showing-text")
 
 //Form elements
@@ -26,6 +27,13 @@ itemsNavButton.addEventListener('click', showItemsView)
 addNewButton.addEventListener('click', () => {
   show([merchantForm])
 })
+
+sortButton.addEventListener('click', () => {
+  const sortedMerchants = [...merchants].sort((a, b) => {
+    return a.attributes.name.localeCompare(b.attributes.name);
+  });
+  displayMerchants(sortedMerchants);
+});
 
 submitMerchantButton.addEventListener('click', (event) => {
   submitMerchant(event)
