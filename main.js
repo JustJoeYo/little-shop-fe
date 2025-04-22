@@ -27,14 +27,16 @@ itemsNavButton.addEventListener('click', showItemsView)
 addNewButton.addEventListener('click', () => {
   show([merchantForm])
 })
-
+// added our event listener for the sort button
 sortButton.addEventListener('click', () => {
+  // sort the merchants array by name
   const sortedMerchants = [...merchants].sort((a, b) => {
     return sortAscending 
       ? a.attributes.name.localeCompare(b.attributes.name)
       : b.attributes.name.localeCompare(a.attributes.name);
   });
   
+  // display the sorted merchants
   displayMerchants(sortedMerchants);
   sortAscending = !sortAscending;
   updateSortButtonText();
