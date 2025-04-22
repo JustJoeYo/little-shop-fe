@@ -94,26 +94,17 @@ function deleteMerchant(event) {
   const card = event.target.closest(".merchant-card");
   const id = card.id.split("-")[1];
 
-  if (
-    confirm(
-      "Are you sure you want to delete this merchant? This action cannot be undone."
-    )
-  ) {
+  if (confirm("Are you sure you want to delete this merchant?")) {
     deleteData(`merchants/${id}`)
       .then(() => {
         card.remove();
-
-        const merchants = getMerchants();
-        const updatedMerchants = merchants.filter(
-          (merchant) => merchant.id !== id
-        );
+        const updatedMerchants = getMerchants().filter((m) => m.id !== id);
         setMerchants(updatedMerchants);
-
         showStatus("Merchant successfully deleted!", true);
       })
       .catch((error) => {
         console.error("Error deleting merchant:", error);
-        showStatus("Failed to delete merchant. Please try again.", false);
+        showStatus("Failed to delete. Try again later.", false);
       });
   }
 }
@@ -145,6 +136,24 @@ function editMerchant(event) {
     const patchBody = { name: newName };
     editData(`merchants/${id}`, patchBody).then((patchResponse) => {
       merchantNameElement.innerHTML = newName;
+
+      const updatedMerchants = getMerchants().map((merchant) => {
+        if (merchant.id === id) {
+          return {
+            ...merchant,
+            attributes: {
+              ...merchant.attributes,
+              name: newName,
+            },
+          };
+        }
+        return merchant;
+      });
+
+      updatedMerchants.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+      setMerchants(updatedMerchants);
+
       showStatus("Merchant successfully updated!", true);
     });
   });
