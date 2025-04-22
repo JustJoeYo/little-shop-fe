@@ -30,9 +30,14 @@ addNewButton.addEventListener('click', () => {
 
 sortButton.addEventListener('click', () => {
   const sortedMerchants = [...merchants].sort((a, b) => {
-    return a.attributes.name.localeCompare(b.attributes.name);
+    return sortAscending 
+      ? a.attributes.name.localeCompare(b.attributes.name)
+      : b.attributes.name.localeCompare(a.attributes.name);
   });
+  
   displayMerchants(sortedMerchants);
+  sortAscending = !sortAscending;
+  updateSortButtonText();
 });
 
 submitMerchantButton.addEventListener('click', (event) => {
@@ -42,6 +47,7 @@ submitMerchantButton.addEventListener('click', (event) => {
 //Global variables
 let merchants;
 let items;
+let sortAscending = true;
 
 //Page load data fetching
 Promise.all([fetchData('merchants'), fetchData('items')])
@@ -49,6 +55,7 @@ Promise.all([fetchData('merchants'), fetchData('items')])
     merchants = responses[0].data
     items = responses[1].data
     displayMerchants(merchants)
+    updateSortButtonText();
   })
   .catch(err => {
     console.log('catch error: ', err)
@@ -263,4 +270,10 @@ function findMerchant(id) {
       return foundMerchant
     }
   }
+}
+
+function updateSortButtonText() {
+  sortButton.textContent = sortAscending 
+    ? 'Sort A-Z (Ascending)' 
+    : 'Sort Z-A (Descending)';
 }
