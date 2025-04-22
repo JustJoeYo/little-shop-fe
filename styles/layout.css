@@ -20,7 +20,7 @@
 
 .sidebar-header {
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -108,7 +108,7 @@
 .active-nav {
   color: var(--text-white);
   background-color: var(--primary-color);
-  box-shadow: 0 0 10px 1px rgba(77, 131, 255, 0.7);
+  box-shadow: 0 0 10px 1px rgba(30, 136, 229, 0.3);
 }
 
 .active-nav:hover {
@@ -120,7 +120,7 @@
   font-size: 0.75rem;
   color: var(--text-light);
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .main-content {

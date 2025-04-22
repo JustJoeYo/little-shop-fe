@@ -89,5 +89,5 @@
 .dashboard-number {
   font-size: 2rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-color);
 }
