@@ -1,0 +1,93 @@
+.merchant-card {
+  background-color: var(--bg-white);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.merchant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-regular);
+}
+
+.item-card {
+  background-color: var(--bg-white);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s;
+  overflow: hidden;
+}
+
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-regular);
+}
+
+.item-card .card-body {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.item-image {
+  min-width: 70px;
+  height: 70px;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-details p {
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.item-price {
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
+}
+
+.item-merchant {
+  font-size: 0.8rem !important;
+  color: var(--text-light) !important;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-card {
+  background-color: var(--bg-white);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-card h3 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.dashboard-number {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}

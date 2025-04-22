@@ -1,59 +1,195 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Little Shop</title>
+    <title>Little Shop Admin</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <aside>
-      <header>
-        <h1>Little Shop</h1>
-        <h2>Admin Portal</h2>
-      </header>
-      <nav>
-        <button id="merchants-nav" class="active-nav">
-          <h2>Merchants</h2>
-        </button>
-        <button id="items-nav">
-          <h2>Items</h2>
-        </button>
-      </nav>
-    </aside>
-    <main>
-      <section class="display-options">
-        <h3>Showing: <span id="showing-text">All Merchants</span></h3>
-        <button id="add-new-button" class="add-new-button" data-state="merchant">+ Add New</button>
-      </section>
-      <section id="add-new-options">
-        <form id="new-merchant-form" class="hidden">
-          <label for="new-merchant-name">New Merchant Name</label>
-          <input id="new-merchant-name" name="new-merchant-name" type="text">
-          <button id="submit-merchant" class="submit">Submit</button>
-        </form>
-        <p id="status-message" class="hidden"><!-- Status message here! --></p>
-        <form id="new-merchant-form" class="hidden">
-          <label for="new-item-name">New Item Name</label>
-          <input id="new-item-name" name="new-item-name" type="text">
-          <label for="new-item-description">New Item Description</label>
-          <input id="new-item-description" name="new-item-description" type="text">
-          <label for="new-item-price">New Item Price</label>
-          <input id="new-item-price" name="new-item-price" type="text">
-          <button id="submit-item" class="submit">Submit</button>
-        </form>
-      </section>
-      <section id="merchants-view" class="view">
-          <!-- Data will be displayed here -->
-        </section>
-        <section id="items-view" class="view hidden">
-          <!-- Data will be displayed here -->
-        </section>
-        <section id="single-merchant-view" class="view hidden">
-          <!-- Data will be displayed here -->
-        </section>
-    </main>
-    <script type="module" src="/main.js"></script>
+    <div class="app-container">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-container">
+            <i class="fas fa-store-alt logo-icon"></i>
+            <div class="logo-text">
+              <h1>Little Shop</h1>
+              <p>Admin Portal</p>
+            </div>
+          </div>
+          <button class="close-sidebar">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <h5 class="nav-title">GENERAL</h5>
+            <button id="dashboard-nav" class="nav-button">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <h5 class="nav-title">MANAGEMENT</h5>
+            <button id="merchants-nav" class="nav-button active-nav">
+              <i class="fas fa-store"></i>
+              <span>Merchants</span>
+            </button>
+            <button id="items-nav" class="nav-button">
+              <i class="fas fa-box-open"></i>
+              <span>Items</span>
+            </button>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <p>Little Shop</p>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="top-header">
+          <button class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="header-search">
+            <input type="text" id="search-input" placeholder="Search..." />
+            <button id="search-button"><i class="fas fa-search"></i></button>
+          </div>
+        </header>
+
+        <div class="content-wrapper">
+          <div class="page-header">
+            <div class="header-title">
+              <h2 id="page-title">Merchants</h2>
+              <p id="showing-text">All Merchants</p>
+            </div>
+            <div class="header-actions">
+              <button
+                id="add-new-button"
+                class="btn-primary"
+                data-state="merchant"
+              >
+                <i class="fas fa-plus"></i> Add New
+              </button>
+            </div>
+          </div>
+
+          <div id="status-message" class="status-message hidden"></div>
+
+          <section id="form-container" class="form-container hidden">
+            <div class="card">
+              <div class="form-header">
+                <h3 id="form-title">Add New Merchant</h3>
+                <button id="close-form" class="btn-icon">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+
+              <form id="new-merchant-form" class="form hidden">
+                <div class="form-group">
+                  <label for="new-merchant-name">Merchant Name</label>
+                  <input
+                    id="new-merchant-name"
+                    name="new-merchant-name"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn-secondary"
+                    id="cancel-merchant"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    id="submit-merchant"
+                    class="btn-primary"
+                  >
+                    Save Merchant
+                  </button>
+                </div>
+              </form>
+
+              <form id="new-item-form" class="form hidden">
+                <div class="form-group">
+                  <label for="new-item-name">Item Name</label>
+                  <input
+                    id="new-item-name"
+                    name="new-item-name"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="new-item-description">Description</label>
+                  <textarea
+                    id="new-item-description"
+                    name="new-item-description"
+                    rows="3"
+                    required
+                  ></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="new-item-price">Price ($)</label>
+                    <input
+                      id="new-item-price"
+                      name="new-item-price"
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="item-merchant-select">Merchant</label>
+                    <select
+                      id="item-merchant-select"
+                      name="item-merchant-select"
+                      required
+                    >
+                      <option value="">Select a merchant</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary" id="cancel-item">
+                    Cancel
+                  </button>
+                  <button type="submit" id="submit-item" class="btn-primary">
+                    Save Item
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <section class="data-display">
+            <section id="merchants-view" class="card-grid"></section>
+
+            <section id="items-view" class="card-grid hidden"></section>
+
+            <section id="dashboard-view" class="dashboard hidden"></section>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
-
