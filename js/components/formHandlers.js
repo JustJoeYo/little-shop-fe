@@ -5,13 +5,19 @@ import { displayItems } from "../views/itemView.js";
 import { displayAddedMerchant } from "../views/merchantView.js";
 import { hide } from "../utils/domUtils.js";
 
-export function setupItemForm() {
+/**
+ * Item form
+ */
+function setupItemForm() {
   const form = document.querySelector("#new-item-form");
   const merchantSelect = document.querySelector("#item-merchant-select");
 
   merchantSelect.innerHTML = "";
+
+  // Get all merchants
   const merchants = getMerchants();
 
+  // Indiv. merchants button
   merchants.forEach((merchant) => {
     const option = document.createElement("option");
     option.value = merchant.id;
@@ -19,62 +25,106 @@ export function setupItemForm() {
     merchantSelect.appendChild(option);
   });
 
+  // Reset form
   form.reset();
 }
 
-export function resetItemForm() {
+/**
+ * Clear inputs
+ */
+function resetItemForm() {
   const form = document.querySelector("#new-item-form");
   if (form) form.reset();
 }
 
-export function submitItem(event) {
+/**
+ * Submit a new item (sends api call)
+ */
+function submitItem(event) {
   event.preventDefault();
 
-  const name = document.getElementById("new-item-name").value;
-  const description = document.getElementById("new-item-description").value;
-  const price = document.getElementById("new-item-price").value;
-  const merchantId = document.getElementById("item-merchant-select").value;
+  // Grab item details
+  const name = document.querySelector("#item-name").value;
+  const description = document.querySelector("#item-description").value;
+  const price = document.querySelector("#item-price").value;
+  const merchantId = document.querySelector("#item-merchant-select").value;
+  const formContainer = document.querySelector("#form-container");
 
-  if (!name.trim() || !description.trim() || !price || !merchantId) {
-    showStatus("All fields are required", false);
+  // check if we have all input boxes (simple validation)
+  if (!name || !description || !price || !merchantId) {
+    showStatus("Please fill out all fields", false);
     return;
   }
 
+  // create the "model" for the item object
   const itemData = {
-    name: name,
-    description: description,
-    unit_price: parseFloat(price),
-    merchant_id: parseInt(merchantId),
+    name,
+    description,
+    unit_price: price,
+    merchant_id: merchantId,
   };
 
-  postData("items", itemData).then((response) => {
-    const items = [...getItems(), response.data];
-    setItems(items);
-    displayItems(getItems());
-    resetItemForm();
-    hide([document.querySelector("#form-container")]);
-    showStatus("Item successfully added!", true);
-  });
+  // Send to API
+  postData("items", { item: itemData })
+    .then((response) => {
+      // Get new item
+      const newItem = response.data;
+
+      // items collection
+      const currentItems = getItems();
+      setItems([...currentItems, newItem]);
+
+      // User's new item
+      displayItems();
+      hide([formContainer]);
+
+      // Let em know it worked! (or didnt!)
+      showStatus("Item added successfully!", true);
+    })
+    .catch((error) => {
+      console.error("Error adding item:", error);
+      showStatus("Error adding item. Please try again.", false);
+    });
 }
 
-export function submitMerchant(event) {
+/**
+ * New merchant
+ */
+function submitMerchant(event) {
   event.preventDefault();
 
-  const name = document.getElementById("new-merchant-name").value;
+  // Grab merchant name from form
+  const name = document.querySelector("#merchant-name").value;
+  const formContainer = document.querySelector("#form-container");
 
-  if (!name.trim()) {
-    showStatus("Merchant name is required", false);
+  // sanity checker
+  if (!name) {
+    showStatus("Please enter a merchant name", false);
     return;
   }
 
-  postData("merchants", { name }).then((response) => {
-    const merchant = response.data;
-    displayAddedMerchant(merchant);
+  // Build the merchant data
+  const merchantData = {
+    name,
+  };
 
-    const form = document.querySelector("#new-merchant-form");
-    form.reset();
+  // Send to api
+  postData("merchants", { merchant: merchantData })
+    .then((response) => {
+      // Show merchant
+      displayAddedMerchant(response.data);
 
-    hide([document.querySelector("#form-container")]);
-    showStatus("Merchant successfully added!", true);
-  });
+      // reset/hide form
+      hide([formContainer]);
+      document.querySelector("#merchant-name").value = "";
+
+      // Let em know it worked! (or didnt)
+      showStatus("Merchant added successfully!", true);
+    })
+    .catch((error) => {
+      console.error("Error adding merchant:", error);
+      showStatus("Error adding merchant. Please try again.", false);
+    });
 }
+
+export { setupItemForm, resetItemForm, submitItem, submitMerchant };

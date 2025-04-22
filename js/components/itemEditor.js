@@ -2,15 +2,21 @@ import { showStatus } from "../../errorHandling.js";
 import { editData } from "../../apiCalls.js";
 import { getItems, setItems } from "../store/dataStore.js";
 
-export function setupItemEditForm(titleEl, descEl, priceEl, item) {
+/**
+ * Form for editing an item
+ */
+function setupItemEditForm(titleEl, descEl, priceEl, item) {
+  // Create name edit
   titleEl.innerHTML = `
     <input type="text" class="edit-item-input-inline" value="${item.name}">
   `;
 
+  // Create description edit
   descEl.innerHTML = `
     <textarea class="edit-item-textarea-inline">${item.description}</textarea>
   `;
 
+  // Create price edit (has confirm/cancel as well here)
   priceEl.innerHTML = `
     <div class="price-edit-container">
       <span>$</span>
@@ -22,12 +28,15 @@ export function setupItemEditForm(titleEl, descEl, priceEl, item) {
     </div>
   `;
 
+  // Get refs
   const nameInput = titleEl.querySelector(".edit-item-input-inline");
   const descInput = descEl.querySelector(".edit-item-textarea-inline");
   const priceInput = priceEl.querySelector(".edit-item-price-inline");
 
+  // magically focus it so they start in the edit box on click
   nameInput.focus();
 
+  // Confirm Button
   const confirmBtn = priceEl.querySelector(".confirm-item-edit");
   const cancelBtn = priceEl.querySelector(".cancel-item-edit");
 
@@ -45,52 +54,78 @@ export function setupItemEditForm(titleEl, descEl, priceEl, item) {
     );
   });
 
+  // Cancel button
   cancelBtn.addEventListener("click", () => {
     cancelItemEdit(titleEl, descEl, priceEl, item);
   });
 }
 
+/**
+ * Save edited item
+ */
 function saveEditedItem(updatedItem, titleEl, descEl, priceEl) {
-  if (!updatedItem.name.trim()) {
-    showStatus("Item name cannot be empty", false);
+  // Do you have the produce Mr White.
+  if (
+    !updatedItem.name ||
+    !updatedItem.description ||
+    !updatedItem.unit_price
+  ) {
+    showStatus("Please fill out all fields", false);
     return;
   }
 
-  if (parseFloat(updatedItem.unit_price) <= 0) {
-    showStatus("Price must be greater than zero", false);
-    return;
-  }
+  // Cleanup format
+  const unit_price = parseFloat(updatedItem.unit_price).toFixed(2);
 
+  // Create model for item obj
   const itemData = {
     name: updatedItem.name,
     description: updatedItem.description,
-    unit_price: parseFloat(updatedItem.unit_price),
+    unit_price,
   };
 
-  editData(`items/${updatedItem.id}`, itemData)
-    .then((response) => {
-      titleEl.textContent = updatedItem.name;
-      descEl.textContent = updatedItem.description;
-      priceEl.innerHTML = `$${parseFloat(updatedItem.unit_price).toFixed(2)}`;
+  // Send to API
+  editData(`items/${updatedItem.id}`, { item: itemData })
+    .then(() => {
+      // Update datastore
+      updateItemInStore({
+        ...updatedItem,
+        unit_price,
+      });
 
-      updateItemInStore(updatedItem);
-      showStatus("Item successfully updated!", true);
+      // Update UI
+      titleEl.innerHTML = updatedItem.name;
+      descEl.innerHTML = updatedItem.description;
+      priceEl.innerHTML = `$${unit_price}`;
+
+      // Let em know it worked! (or didnt)
+      showStatus("Item updated successfully!", true);
     })
     .catch((error) => {
       console.error("Error updating item:", error);
-      showStatus("Failed to update item. Please try again.", false);
+
+      // Put it BACKKKK!
       cancelItemEdit(titleEl, descEl, priceEl, updatedItem);
+      showStatus("Error updating item. Please try again.", false);
     });
 }
 
+/**
+ * Restore original values
+ */
 function cancelItemEdit(titleEl, descEl, priceEl, item) {
-  titleEl.textContent = item.name;
-  descEl.textContent = item.description;
+  titleEl.innerHTML = item.name;
+  descEl.innerHTML = item.description;
   priceEl.innerHTML = `$${parseFloat(item.price).toFixed(2)}`;
 }
 
+/**
+ * Update local data (datastore)
+ */
 function updateItemInStore(updatedItem) {
   const items = getItems();
+
+  // Update item with values
   const updatedItems = items.map((item) => {
     if (item.id === updatedItem.id) {
       return {
@@ -106,5 +141,8 @@ function updateItemInStore(updatedItem) {
     return item;
   });
 
+  // Save updated items collection
   setItems(updatedItems);
 }
+
+export { setupItemEditForm };
