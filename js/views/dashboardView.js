@@ -10,13 +10,14 @@ export function showDashboardView() {
   const pageTitle = document.querySelector("#page-title");
   const showingText = document.querySelector("#showing-text");
   const addNewButton = document.querySelector("#add-new-button");
+  const sortControls = document.querySelector("#sort-controls");
 
   pageTitle.textContent = "Dashboard";
   showingText.textContent = "Overview";
   addNewButton.dataset.state = "merchant";
 
   show([dashboardView, addNewButton]);
-  hide([merchantsView, itemsView, formContainer]);
+  hide([merchantsView, itemsView, formContainer, sortControls]);
 
   removeActiveNavClass();
   document.querySelector("#dashboard-nav").classList.add("active-nav");

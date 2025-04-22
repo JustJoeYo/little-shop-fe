@@ -1,10 +1,15 @@
 import "../styles/main.css";
 import { fetchData } from "../apiCalls.js";
 import { displayMerchants, showMerchantsView } from "./views/merchantView.js";
-import { showItemsView } from "./views/itemView.js";
+import { showItemsView, displayItems } from "./views/itemView.js";
 import { showDashboardView } from "./views/dashboardView.js";
 import { show, hide } from "./utils/domUtils.js";
-import { setMerchants, setItems } from "./store/dataStore.js";
+import {
+  setMerchants,
+  setItems,
+  getMerchants,
+  getItems,
+} from "./store/dataStore.js";
 import {
   setupItemForm,
   submitItem,
@@ -12,21 +17,6 @@ import {
 } from "./components/formHandlers.js";
 
 const UI = {};
-
-function initializeUIElements() {
-  UI.merchantsNavButton = document.querySelector("#merchants-nav");
-  UI.itemsNavButton = document.querySelector("#items-nav");
-  UI.dashboardNavButton = document.querySelector("#dashboard-nav");
-  UI.addNewButton = document.querySelector("#add-new-button");
-  UI.formContainer = document.querySelector("#form-container");
-  UI.merchantForm = document.querySelector("#new-merchant-form");
-  UI.itemForm = document.querySelector("#new-item-form");
-  UI.cancelButtons = document.querySelectorAll(".cancel-form");
-  UI.menuToggle = document.querySelector(".menu-toggle");
-  UI.sidebar = document.querySelector(".sidebar");
-  UI.sidebarOverlay = document.querySelector(".sidebar-overlay");
-  UI.closeSidebar = document.querySelector(".close-sidebar");
-}
 
 function setupEventListeners() {
   if (UI.menuToggle) {
@@ -55,6 +45,67 @@ function setupEventListeners() {
       hide([UI.formContainer]);
     });
   });
+
+  UI.searchInput.addEventListener("input", handleSearch);
+}
+
+function initializeUIElements() {
+  UI.merchantsNavButton = document.querySelector("#merchants-nav");
+  UI.itemsNavButton = document.querySelector("#items-nav");
+  UI.dashboardNavButton = document.querySelector("#dashboard-nav");
+  UI.addNewButton = document.querySelector("#add-new-button");
+  UI.formContainer = document.querySelector("#form-container");
+  UI.merchantForm = document.querySelector("#new-merchant-form");
+  UI.itemForm = document.querySelector("#new-item-form");
+  UI.cancelButtons = document.querySelectorAll(".cancel-form");
+  UI.menuToggle = document.querySelector(".menu-toggle");
+  UI.sidebar = document.querySelector(".sidebar");
+  UI.sidebarOverlay = document.querySelector(".sidebar-overlay");
+  UI.closeSidebar = document.querySelector(".close-sidebar");
+  UI.searchInput = document.querySelector("#search-input");
+}
+
+function handleSearch() {
+  const searchQuery = UI.searchInput.value.trim().toLowerCase();
+  const activePage = getActivePage();
+
+  if (searchQuery === "") {
+    if (activePage === "merchants") {
+      displayMerchants(getMerchants());
+    } else if (activePage === "items") {
+      displayItems(getItems());
+    }
+    return;
+  }
+
+  if (activePage === "merchants") {
+    const filteredMerchants = getMerchants().filter((merchant) =>
+      merchant.attributes.name.toLowerCase().includes(searchQuery)
+    );
+    displayMerchants(filteredMerchants);
+  } else if (activePage === "items") {
+    const filteredItems = getItems().filter(
+      (item) =>
+        item.attributes.name.toLowerCase().includes(searchQuery) ||
+        item.attributes.description.toLowerCase().includes(searchQuery)
+    );
+    displayItems(filteredItems);
+  }
+}
+
+function getActivePage() {
+  if (
+    document.querySelector("#merchants-view").classList.contains("hidden") ===
+    false
+  ) {
+    return "merchants";
+  } else if (
+    document.querySelector("#items-view").classList.contains("hidden") === false
+  ) {
+    return "items";
+  } else {
+    return "dashboard";
+  }
 }
 
 function toggleSidebar() {

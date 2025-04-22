@@ -121,13 +121,32 @@ export function showItemsView() {
     pageTitle: document.querySelector("#page-title"),
     showingText: document.querySelector("#showing-text"),
     addNewButton: document.querySelector("#add-new-button"),
+    sortControls: document.querySelector("#sort-controls"),
   };
 
   elements.pageTitle.textContent = "Items";
   elements.showingText.textContent = "All Items";
   elements.addNewButton.dataset.state = "item";
 
-  show([elements.itemsView, elements.addNewButton]);
+  elements.sortControls.innerHTML = `
+    <div class="sort-container">
+      <select id="name-sort" class="sort-select">
+        <option value="">Sort by Name</option>
+        <option value="asc">Name (A-Z)</option>
+        <option value="desc">Name (Z-A)</option>
+      </select>
+      <select id="price-sort" class="sort-select">
+        <option value="">Sort by Price</option>
+        <option value="asc">Price (Low-High)</option>
+        <option value="desc">Price (High-Low)</option>
+      </select>
+    </div>
+  `;
+
+  document.querySelector("#name-sort").addEventListener("change", sortItems);
+  document.querySelector("#price-sort").addEventListener("change", sortItems);
+
+  show([elements.itemsView, elements.addNewButton, elements.sortControls]);
   hide([
     elements.merchantsView,
     elements.dashboardView,
@@ -141,6 +160,41 @@ export function showItemsView() {
     '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading items...</p></div>';
 
   fetchAllItems(elements.itemsView);
+}
+
+function sortItems() {
+  const nameSort = document.querySelector("#name-sort").value;
+  const priceSort = document.querySelector("#price-sort").value;
+
+  let items = [...getItems()];
+
+  if (this.id === "name-sort" && this.value !== "" && priceSort !== "") {
+    document.querySelector("#price-sort").value = "";
+  } else if (this.id === "price-sort" && this.value !== "" && nameSort !== "") {
+    document.querySelector("#name-sort").value = "";
+  }
+
+  if (nameSort === "asc") {
+    items.sort((a, b) => a.attributes.name.localeCompare(b.attributes.name));
+  } else if (nameSort === "desc") {
+    items.sort((a, b) => b.attributes.name.localeCompare(a.attributes.name));
+  }
+
+  if (priceSort === "asc") {
+    items.sort(
+      (a, b) =>
+        parseFloat(a.attributes.unit_price) -
+        parseFloat(b.attributes.unit_price)
+    );
+  } else if (priceSort === "desc") {
+    items.sort(
+      (a, b) =>
+        parseFloat(b.attributes.unit_price) -
+        parseFloat(a.attributes.unit_price)
+    );
+  }
+
+  displayItems(items);
 }
 
 function fetchAllItems(itemsView) {

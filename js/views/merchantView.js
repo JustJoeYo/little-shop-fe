@@ -178,17 +178,55 @@ export function showMerchantsView() {
     dashboardView: document.querySelector("#dashboard-view"),
     formContainer: document.querySelector("#form-container"),
     merchantsNavButton: document.querySelector("#merchants-nav"),
+    sortControls: document.querySelector("#sort-controls"),
   };
 
   elements.pageTitle.textContent = "Merchants";
   elements.showingText.textContent = "All Merchants";
   elements.addNewButton.dataset.state = "merchant";
 
-  show([elements.merchantsView, elements.addNewButton]);
+  elements.sortControls.innerHTML = `
+    <div class="sort-container">
+      <select id="merchant-name-sort" class="sort-select">
+        <option value="">Sort by Name</option>
+        <option value="asc">Name (A-Z)</option>
+        <option value="desc">Name (Z-A)</option>
+      </select>
+    </div>
+  `;
+
+  document
+    .querySelector("#merchant-name-sort")
+    .addEventListener("change", sortMerchants);
+
+  show([elements.merchantsView, elements.addNewButton, elements.sortControls]);
   hide([elements.itemsView, elements.dashboardView, elements.formContainer]);
 
   removeActiveNavClass();
   elements.merchantsNavButton.classList.add("active-nav");
 
   displayMerchants(getMerchants());
+}
+
+function sortMerchants() {
+  const nameSort = document.querySelector("#merchant-name-sort").value;
+
+  if (nameSort === "") {
+    displayMerchants(getMerchants());
+    return;
+  }
+
+  let merchants = [...getMerchants()];
+
+  if (nameSort === "asc") {
+    merchants.sort((a, b) =>
+      a.attributes.name.localeCompare(b.attributes.name)
+    );
+  } else if (nameSort === "desc") {
+    merchants.sort((a, b) =>
+      b.attributes.name.localeCompare(a.attributes.name)
+    );
+  }
+
+  displayMerchants(merchants);
 }
