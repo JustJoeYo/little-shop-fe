@@ -64,7 +64,7 @@ function setupItemEditForm(titleEl, descEl, priceEl, item) {
  * Save edited item
  */
 function saveEditedItem(updatedItem, titleEl, descEl, priceEl) {
-  // Do you have the produce Mr White.
+  // Do you have the product Mr White.
   if (
     !updatedItem.name ||
     !updatedItem.description ||
@@ -77,29 +77,37 @@ function saveEditedItem(updatedItem, titleEl, descEl, priceEl) {
   // Cleanup format
   const unit_price = parseFloat(updatedItem.unit_price).toFixed(2);
 
-  // Create model for item obj
+  // Create model for item obj - dont nest it.. figured that out the hard way.
   const itemData = {
     name: updatedItem.name,
     description: updatedItem.description,
     unit_price,
   };
 
-  // Send to API
-  editData(`items/${updatedItem.id}`, { item: itemData })
-    .then(() => {
-      // Update datastore
-      updateItemInStore({
-        ...updatedItem,
-        unit_price,
-      });
+  // Show loading spinny
+  titleEl.innerHTML = `<span><i class="fas fa-spinner fa-spin"></i> Saving...</span>`;
 
-      // Update UI
-      titleEl.innerHTML = updatedItem.name;
-      descEl.innerHTML = updatedItem.description;
-      priceEl.innerHTML = `$${unit_price}`;
+  // Send to API - dont wrap in {item: itemData}
+  editData(`items/${updatedItem.id}`, itemData)
+    .then((response) => {
+      // did we actually update it?
+      if (response && response.data) {
+        // Update datastore
+        const serverUpdatedItem = response.data;
+        updateItemInStore(serverUpdatedItem);
 
-      // Let em know it worked! (or didnt)
-      showStatus("Item updated successfully!", true);
+        // Update UI with data
+        titleEl.innerHTML = serverUpdatedItem.attributes.name;
+        descEl.innerHTML = serverUpdatedItem.attributes.description;
+        priceEl.innerHTML = `$${parseFloat(
+          serverUpdatedItem.attributes.unit_price
+        ).toFixed(2)}`;
+
+        // Let em know it worked!
+        showStatus("Item updated successfully!", true);
+      } else {
+        throw new Error("Invalid server response");
+      }
     })
     .catch((error) => {
       console.error("Error updating item:", error);
@@ -125,18 +133,35 @@ function cancelItemEdit(titleEl, descEl, priceEl, item) {
 function updateItemInStore(updatedItem) {
   const items = getItems();
 
-  // Update item with values
+  // check item format
+  const itemId = updatedItem.id;
+
+  // Update itrem
   const updatedItems = items.map((item) => {
-    if (item.id === updatedItem.id) {
-      return {
-        ...item,
-        attributes: {
-          ...item.attributes,
-          name: updatedItem.name,
-          description: updatedItem.description,
-          unit_price: updatedItem.unit_price,
-        },
-      };
+    if (item.id === itemId) {
+      // check attributes
+      if (updatedItem.attributes) {
+        return {
+          ...item,
+          attributes: {
+            ...item.attributes,
+            name: updatedItem.attributes.name,
+            description: updatedItem.attributes.description,
+            unit_price: updatedItem.attributes.unit_price,
+          },
+        };
+      } else {
+        // check our attributes to see if it matches
+        return {
+          ...item,
+          attributes: {
+            ...item.attributes,
+            name: updatedItem.name,
+            description: updatedItem.description,
+            unit_price: updatedItem.unit_price,
+          },
+        };
+      }
     }
     return item;
   });

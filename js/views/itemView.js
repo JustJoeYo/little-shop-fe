@@ -164,12 +164,19 @@ export function showItemsView() {
   // Check price range for sliders
   const items = getItems();
   let minPrice = 0;
-  let maxPrice = 1000; // Default val
+  let maxPrice = 10000; // Default val
 
   if (items && items.length > 0) {
-    const prices = items.map((item) => parseFloat(item.attributes.unit_price));
-    minPrice = Math.floor(Math.min(...prices));
-    maxPrice = Math.ceil(Math.max(...prices));
+    try {
+      const prices = items.map((item) =>
+        parseFloat(item.attributes.unit_price)
+      );
+      minPrice = Math.floor(Math.min(...prices));
+      const calculatedMax = Math.ceil(Math.max(...prices));
+      maxPrice = Math.max(calculatedMax, 10000);
+    } catch (error) {
+      console.error("Error with price range:", error);
+    }
   }
 
   // filter/sort controls
