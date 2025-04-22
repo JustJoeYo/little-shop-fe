@@ -156,30 +156,11 @@ function editMerchant(event) {
 
 function displayMerchantItems(event) {
   const merchantId = event.target.closest(".merchant-card").id.split("-")[1];
-  const filteredItems = filterByMerchant(merchantId);
-
-  const pageTitle = document.querySelector("#page-title");
-  const showingText = document.querySelector("#showing-text");
-  const addNewButton = document.querySelector("#add-new-button");
-  const merchantsView = document.querySelector("#merchants-view");
-  const itemsView = document.querySelector("#items-view");
-  const dashboardView = document.querySelector("#dashboard-view");
-  const formContainer = document.querySelector("#form-container");
-  const itemsNavButton = document.querySelector("#items-nav");
-
-  pageTitle.textContent = "Items";
-  showingText.textContent = `Items for ${
-    findMerchant(merchantId).attributes.name
-  }`;
-  addNewButton.dataset.state = "item";
-
-  show([itemsView, addNewButton]);
-  hide([merchantsView, dashboardView, formContainer]);
-
-  removeActiveNavClass();
-  itemsNavButton.classList.add("active-nav");
-
-  displayItems(filteredItems);
+  if (window.showMerchantItems) {
+    window.showMerchantItems(merchantId);
+  } else {
+    console.error("showMerchantItems function not available");
+  }
 }
 
 export function showMerchantsView() {
@@ -206,6 +187,5 @@ export function showMerchantsView() {
 }
 
 export function displayItems(items) {
-  // This is just a placeholder since it's defined elsewhere
   console.log(items);
 }

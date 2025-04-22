@@ -22,8 +22,9 @@ export function findMerchant(id) {
 }
 
 export function filterByMerchant(merchantId) {
+  const numericId = parseInt(merchantId, 10);
   return items.filter(
-    (item) => item.attributes.merchant_id === parseInt(merchantId)
+    (item) => parseInt(item.attributes.merchant_id, 10) === numericId
   );
 }
 

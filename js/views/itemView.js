@@ -100,11 +100,9 @@ export function editItem(event) {
   show([formContainer, itemForm]);
   hide([merchantForm]);
 
-  // Remove any existing event listeners
   const newSubmitButton = submitItemButton.cloneNode(true);
   submitItemButton.parentNode.replaceChild(newSubmitButton, submitItemButton);
 
-  // Add the real updateItem function
   newSubmitButton.addEventListener("click", function (event) {
     updateItem(event);
   });
@@ -125,7 +123,6 @@ function populateMerchantSelect() {
   });
 }
 
-// The actual implementation for updateItem
 function updateItem(event) {
   event.preventDefault();
 
@@ -163,9 +160,19 @@ function updateItem(event) {
     if (merchantsView.classList.contains("hidden")) {
       displayItems(getItems());
     } else {
-      const showMerchantsView =
-        require("../views/merchantView.js").showMerchantsView;
-      showMerchantsView();
+      const pageTitle = document.querySelector("#page-title");
+      const showingText = document.querySelector("#showing-text");
+
+      pageTitle.textContent = "Merchants";
+      showingText.textContent = "All Merchants";
+
+      show([merchantsView]);
+      hide([
+        document.querySelector("#items-view"),
+        document.querySelector("#dashboard-view"),
+      ]);
+
+      document.querySelector("#merchants-nav").click();
     }
 
     const submitItemButton = document.querySelector("#submit-item");
@@ -179,11 +186,6 @@ function resetItemForm() {
   document.getElementById("new-item-description").value = "";
   document.getElementById("new-item-price").value = "";
   document.getElementById("item-merchant-select").value = "";
-}
-
-function submitItem() {
-  // This is just a placeholder - the real implementation is in main.js
-  console.log("Submit item clicked");
 }
 
 export function showItemsView() {
