@@ -44,6 +44,11 @@ function initializeUIElements() {
 }
 
 function setupEventListeners() {
+  const menuToggle = document.querySelector(".menu-toggle");
+  const sidebar = document.querySelector(".sidebar");
+  const sidebarOverlay = document.querySelector(".sidebar-overlay");
+  const closeSidebar = document.querySelector(".close-sidebar");
+
   if (UI.merchantsNavButton) {
     UI.merchantsNavButton.addEventListener("click", showMerchantsView);
   }
@@ -93,6 +98,31 @@ function setupEventListeners() {
   if (UI.searchInput) {
     UI.searchInput.addEventListener("keyup", (e) => {
       if (e.key === "Enter") performSearch();
+    });
+  }
+
+  if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      if (sidebarOverlay) {
+        sidebarOverlay.classList.toggle("active");
+      }
+    });
+  }
+
+  if (closeSidebar) {
+    closeSidebar.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      if (sidebarOverlay) {
+        sidebarOverlay.classList.remove("active");
+      }
+    });
+  }
+
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      sidebarOverlay.classList.remove("active");
     });
   }
 }
