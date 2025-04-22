@@ -1,6 +1,11 @@
 import { showStatus } from "../../errorHandling.js";
 import { postData } from "../../apiCalls.js";
-import { getItems, getMerchants, setItems } from "../store/dataStore.js";
+import {
+  getItems,
+  getMerchants,
+  setItems,
+  setMerchants,
+} from "../store/dataStore.js";
 import { displayItems } from "../views/itemView.js";
 import { displayAddedMerchant } from "../views/merchantView.js";
 import { hide } from "../utils/domUtils.js";
@@ -94,8 +99,8 @@ function submitItem(event) {
 function submitMerchant(event) {
   event.preventDefault();
 
-  // Grab merchant name from form
-  const name = document.querySelector("#merchant-name").value;
+  // Grab merchant name
+  const name = document.querySelector("#new-merchant-name").value;
   const formContainer = document.querySelector("#form-container");
 
   // sanity checker
@@ -109,15 +114,22 @@ function submitMerchant(event) {
     name,
   };
 
-  // Send to api
-  postData("merchants", { merchant: merchantData })
+  // Send to api - don't nest the data
+  postData("merchants", merchantData)
     .then((response) => {
+      // Get new merchant
+      const newMerchant = response.data;
+
+      // Update our datastore
+      const currentMerchants = getMerchants();
+      setMerchants([...currentMerchants, newMerchant]);
+
       // Show merchant
-      displayAddedMerchant(response.data);
+      displayAddedMerchant(newMerchant);
 
       // reset/hide form
       hide([formContainer]);
-      document.querySelector("#merchant-name").value = "";
+      document.querySelector("#new-merchant-name").value = "";
 
       // Let em know it worked! (or didnt)
       showStatus("Merchant added successfully!", true);
