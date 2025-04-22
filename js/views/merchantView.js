@@ -1,5 +1,6 @@
 import { showStatus } from "../../errorHandling.js";
-import { deleteData, editData } from "../../apiCalls.js";
+import { deleteData, editData, fetchData } from "../../apiCalls.js";
+import { displayItems } from "./itemView.js";
 import {
   getMerchants,
   findMerchant,
@@ -165,11 +166,47 @@ function editMerchant(event) {
 
 function displayMerchantItems(event) {
   const merchantId = event.target.closest(".merchant-card").id.split("-")[1];
-  if (window.showMerchantItems) {
-    window.showMerchantItems(merchantId);
-  } else {
-    console.error("showMerchantItems function not available");
-  }
+
+  // had to make big ugly code to bypass state data (direct requesting)
+  const itemsView = document.querySelector("#items-view");
+  const merchantsView = document.querySelector("#merchants-view");
+  const dashboardView = document.querySelector("#dashboard-view");
+  const pageTitle = document.querySelector("#page-title");
+  const showingText = document.querySelector("#showing-text");
+  const addNewButton = document.querySelector("#add-new-button");
+  const formContainer = document.querySelector("#form-container");
+
+  const merchant = findMerchant(merchantId);
+
+  pageTitle.textContent = "Items";
+  showingText.textContent = `Items for ${
+    merchant ? merchant.attributes.name : "Merchant"
+  }`;
+  addNewButton.dataset.state = "item";
+
+  show([itemsView, addNewButton]);
+  hide([merchantsView, dashboardView, formContainer]);
+
+  removeActiveNavClass();
+  document.querySelector("#items-nav").classList.add("active-nav");
+
+  itemsView.innerHTML =
+    '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading merchant items...</p></div>';
+
+  fetchData(`merchants/${merchantId}/items`)
+    .then((response) => {
+      if (response && response.data && response.data.length > 0) {
+        displayItems(response.data);
+      } else {
+        itemsView.innerHTML =
+          '<div class="empty-state"><i class="fas fa-box-open"></i><p>This merchant has no items</p></div>';
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching merchant items:", error);
+      itemsView.innerHTML =
+        '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading merchant items</p></div>';
+    });
 }
 
 export function showMerchantsView() {
@@ -193,8 +230,4 @@ export function showMerchantsView() {
   merchantsNavButton.classList.add("active-nav");
 
   displayMerchants(getMerchants());
-}
-
-export function displayItems(items) {
-  console.log(items);
 }
