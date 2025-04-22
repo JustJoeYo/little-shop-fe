@@ -73,6 +73,44 @@ function setupEventListeners() {
 
   // Search Bar
   UI.searchInput.addEventListener("input", handleSearch);
+
+  // "Add New" button
+  UI.addNewButton.addEventListener("click", handleAddNew);
+
+  // Form submissions
+  const merchantForm = document.querySelector("#new-merchant-form");
+  const itemForm = document.querySelector("#new-item-form");
+
+  if (merchantForm) {
+    merchantForm.addEventListener("submit", submitMerchant);
+  }
+
+  if (itemForm) {
+    itemForm.addEventListener("submit", submitItem);
+  }
+
+  // Close/cancel form buttons
+  const closeFormButton = document.querySelector("#close-form");
+  const cancelMerchantButton = document.querySelector("#cancel-merchant");
+  const cancelItemButton = document.querySelector("#cancel-item");
+
+  if (closeFormButton) {
+    closeFormButton.addEventListener("click", () => {
+      hide([UI.formContainer]);
+    });
+  }
+
+  if (cancelMerchantButton) {
+    cancelMerchantButton.addEventListener("click", () => {
+      hide([UI.formContainer]);
+    });
+  }
+
+  if (cancelItemButton) {
+    cancelItemButton.addEventListener("click", () => {
+      hide([UI.formContainer]);
+    });
+  }
 }
 
 /**
@@ -147,21 +185,32 @@ function closeSidebar() {
 }
 
 /**
- * "Add New" button clicked
+ * Handle add new
  */
 function handleAddNew() {
   const state = UI.addNewButton.dataset.state;
-  const merchantFormContainer = document.querySelector(
-    "#add-merchant-container"
-  );
-  const itemFormContainer = document.querySelector("#add-item-container");
+  const merchantForm = document.querySelector("#new-merchant-form");
+  const itemForm = document.querySelector("#new-item-form");
+  const formTitle = document.querySelector("#form-title");
 
   if (state === "merchant") {
-    show([UI.formContainer, merchantFormContainer]);
-    hide([itemFormContainer]);
+    // Show merchant
+    show([UI.formContainer]);
+    show([merchantForm]);
+    hide([itemForm]);
+
+    // Update title
+    if (formTitle) formTitle.textContent = "Add New Merchant";
   } else if (state === "item") {
-    show([UI.formContainer, itemFormContainer]);
-    hide([merchantFormContainer]);
+    // Show item
+    show([UI.formContainer]);
+    show([itemForm]);
+    hide([merchantForm]);
+
+    // Update title
+    if (formTitle) formTitle.textContent = "Add New Item";
+
+    // setup dropdown
     setupItemForm();
   }
 }

@@ -154,12 +154,20 @@ export function showItemsView() {
     showingText: document.querySelector("#showing-text"),
     addNewButton: document.querySelector("#add-new-button"),
     sortControls: document.querySelector("#sort-controls"),
+    formTitle: document.querySelector("#form-title"), // Add reference to form title
   };
 
   // Update header
   elements.pageTitle.textContent = "Items";
   elements.showingText.textContent = "All Items";
+
+  // Check mode
   elements.addNewButton.dataset.state = "item";
+
+  // Change title
+  if (elements.formTitle) {
+    elements.formTitle.textContent = "Add New Item";
+  }
 
   // Check price range for sliders
   const items = getItems();

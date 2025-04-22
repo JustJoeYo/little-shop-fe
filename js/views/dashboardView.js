@@ -18,13 +18,15 @@ export function showDashboardView() {
     sortControls: document.querySelector("#sort-controls"),
   };
 
-  // Update the header text
+  // Update text
   elements.pageTitle.textContent = "Dashboard";
   elements.showingText.textContent = "Overview";
-  elements.addNewButton.dataset.state = "merchant";
+
+  // Hide add btn
+  hide([elements.addNewButton]);
 
   // Show/hide elements
-  show([elements.dashboardView, elements.addNewButton]);
+  show([elements.dashboardView]);
   hide([
     elements.merchantsView,
     elements.itemsView,
@@ -32,32 +34,24 @@ export function showDashboardView() {
     elements.sortControls,
   ]);
 
-  // Update active page
+  // Update active nav
   removeActiveNavClass();
   document.querySelector("#dashboard-nav").classList.add("active-nav");
 
-  // Show a loading spinner again.
+  // Show a loading spinna
   elements.dashboardView.innerHTML =
     '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading dashboard data...</p></div>';
 
-  // Fetch the data
-  Promise.all([fetchData("merchants"), fetchData("items")])
-    .then(([merchantsResponse, itemsResponse]) => {
-      const merchants = merchantsResponse.data;
-      const items = itemsResponse.data;
+  // Get the data
+  const merchants = getMerchants();
+  const items = getItems();
 
-      // Update the dashboard with our data
-      updateDashboard(merchants, items);
-    })
-    .catch((error) => {
-      console.error("Error loading dashboard data:", error);
-      elements.dashboardView.innerHTML =
-        '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading dashboard data</p></div>';
-    });
+  // Update dashboard
+  updateDashboard(merchants, items);
 }
 
 /**
- * Update the dashboard cards (# of merchants/items etc)
+ * Update dashboard
  */
 function updateDashboard(merchants, items) {
   const dashboardView = document.querySelector("#dashboard-view");
@@ -74,10 +68,10 @@ function updateDashboard(merchants, items) {
     }, 0);
   }
 
-  // Calculate ave price
+  // Calculate price
   const averagePrice = itemCount > 0 ? (totalPrice / itemCount).toFixed(2) : 0;
 
-  // Dashboard HTML
+  // Build HTML
   dashboardView.innerHTML = `
     <div class="dashboard-grid">
       <div class="dashboard-card">

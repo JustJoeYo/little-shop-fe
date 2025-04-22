@@ -38,25 +38,24 @@ function resetItemForm() {
 }
 
 /**
- * Submit a new item (sends api call)
+ * Submit a new item
  */
 function submitItem(event) {
   event.preventDefault();
 
-  // Grab item details
-  const name = document.querySelector("#item-name").value;
-  const description = document.querySelector("#item-description").value;
-  const price = document.querySelector("#item-price").value;
+  // Grab all the item details
+  const name = document.querySelector("#new-item-name").value;
+  const description = document.querySelector("#new-item-description").value;
+  const price = document.querySelector("#new-item-price").value;
   const merchantId = document.querySelector("#item-merchant-select").value;
   const formContainer = document.querySelector("#form-container");
 
-  // check if we have all input boxes (simple validation)
+  // Make sure we got everything we need
   if (!name || !description || !price || !merchantId) {
     showStatus("Please fill out all fields", false);
     return;
   }
 
-  // create the "model" for the item object
   const itemData = {
     name,
     description,
@@ -64,21 +63,23 @@ function submitItem(event) {
     merchant_id: merchantId,
   };
 
-  // Send to API
-  postData("items", { item: itemData })
+  postData("items", itemData)
     .then((response) => {
-      // Get new item
+      // Get new items
       const newItem = response.data;
 
-      // items collection
+      // Add to datastore
       const currentItems = getItems();
       setItems([...currentItems, newItem]);
 
-      // User's new item
+      // Show items
       displayItems();
       hide([formContainer]);
 
-      // Let em know it worked! (or didnt!)
+      // Reset form
+      document.querySelector("#new-item-form").reset();
+
+      // Let em know it worked!
       showStatus("Item added successfully!", true);
     })
     .catch((error) => {
