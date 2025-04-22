@@ -4,7 +4,6 @@ import { displayItems } from "./itemView.js";
 import {
   getMerchants,
   findMerchant,
-  filterByMerchant,
   setMerchants,
 } from "../store/dataStore.js";
 import { show, hide, removeActiveNavClass } from "../utils/domUtils.js";
@@ -19,10 +18,11 @@ export function displayMerchants(merchants = getMerchants()) {
     return;
   }
 
-  merchants.forEach((merchant) => {
-    merchantsView.innerHTML += createMerchantCard(merchant);
-  });
+  const merchantsHtml = merchants
+    .map((merchant) => createMerchantCard(merchant))
+    .join("");
 
+  merchantsView.innerHTML = merchantsHtml;
   merchantsView.addEventListener("click", handleMerchantClicks);
 }
 
@@ -41,24 +41,18 @@ export function displayAddedMerchant(merchant) {
 
 function handleMerchantClicks(event) {
   const target = event.target;
+  const isOrHasParent = (element, className) =>
+    element.classList.contains(className) ||
+    (element.parentElement &&
+      element.parentElement.classList.contains(className));
 
-  if (
-    target.classList.contains("delete-merchant") ||
-    (target.parentElement &&
-      target.parentElement.classList.contains("delete-merchant"))
-  ) {
+  if (isOrHasParent(target, "delete-merchant")) {
     deleteMerchant(event);
-  } else if (
-    target.classList.contains("edit-merchant") ||
-    (target.parentElement &&
-      target.parentElement.classList.contains("edit-merchant"))
-  ) {
+  } else if (isOrHasParent(target, "edit-merchant")) {
     editMerchant(event);
   } else if (
-    target.classList.contains("view-merchant-items") ||
-    target.classList.contains("btn-view") ||
-    (target.parentElement &&
-      target.parentElement.classList.contains("view-merchant-items"))
+    isOrHasParent(target, "view-merchant-items") ||
+    isOrHasParent(target, "btn-view")
   ) {
     displayMerchantItems(event);
   }
@@ -84,6 +78,10 @@ function deleteMerchant(event) {
 }
 
 function createMerchantCard(merchant) {
+  const itemCountDisplay = merchant.attributes.item_count
+    ? `<p>Items: ${merchant.attributes.item_count}</p>`
+    : "";
+
   return `
     <div class="merchant-card" id="merchant-${merchant.id}">
       <div class="card-header">
@@ -95,11 +93,7 @@ function createMerchantCard(merchant) {
       </div>
       <div class="card-body">
         <p>ID: ${merchant.id}</p>
-        ${
-          merchant.attributes.item_count
-            ? `<p>Items: ${merchant.attributes.item_count}</p>`
-            : ""
-        }
+        ${itemCountDisplay}
       </div>
       <div class="card-footer">
         <button class="btn-view view-merchant-items">
@@ -116,7 +110,11 @@ function editMerchant(event) {
   const currentName = merchantNameElement.textContent;
   const id = card.id.split("-")[1];
 
-  merchantNameElement.innerHTML = `
+  setupEditForm(merchantNameElement, currentName, id);
+}
+
+function setupEditForm(element, currentName, id) {
+  element.innerHTML = `
     <input type="text" class="edit-merchant-input-inline" value="${currentName}">
     <div class="edit-actions">
       <button class="btn-icon confirm-merchant-edit" title="Confirm"><i class="fas fa-check"></i></button>
@@ -124,59 +122,71 @@ function editMerchant(event) {
     </div>
   `;
 
-  card.querySelector(".edit-merchant-input-inline").focus();
+  const inputField = element.querySelector(".edit-merchant-input-inline");
+  inputField.focus();
 
-  card.querySelector(".confirm-merchant-edit").addEventListener("click", () => {
-    const newName = card.querySelector(".edit-merchant-input-inline").value;
-
-    if (!newName.trim()) {
-      showStatus("Merchant name cannot be empty", false);
-      return;
-    }
-
-    const patchBody = { name: newName };
-    editData(`merchants/${id}`, patchBody).then((patchResponse) => {
-      merchantNameElement.innerHTML = newName;
-
-      const updatedMerchants = getMerchants().map((merchant) => {
-        if (merchant.id === id) {
-          return {
-            ...merchant,
-            attributes: {
-              ...merchant.attributes,
-              name: newName,
-            },
-          };
-        }
-        return merchant;
-      });
-
-      updatedMerchants.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-
-      setMerchants(updatedMerchants);
-
-      showStatus("Merchant successfully updated!", true);
+  element
+    .querySelector(".confirm-merchant-edit")
+    .addEventListener("click", () => {
+      saveEditedMerchant(inputField.value, element, id);
     });
+
+  element
+    .querySelector(".cancel-merchant-edit")
+    .addEventListener("click", () => {
+      element.innerHTML = currentName;
+    });
+}
+
+function saveEditedMerchant(newName, element, id) {
+  if (!newName.trim()) {
+    showStatus("Merchant name cannot be empty", false);
+    return;
+  }
+
+  editData(`merchants/${id}`, { name: newName }).then(() => {
+    element.innerHTML = newName;
+    updateMerchantInStore(id, newName);
+    showStatus("Merchant successfully updated!", true);
+  });
+}
+
+function updateMerchantInStore(id, newName) {
+  const updatedMerchants = getMerchants().map((merchant) => {
+    if (merchant.id === id) {
+      return {
+        ...merchant,
+        attributes: {
+          ...merchant.attributes,
+          name: newName,
+        },
+      };
+    }
+    return merchant;
   });
 
-  card.querySelector(".cancel-merchant-edit").addEventListener("click", () => {
-    merchantNameElement.innerHTML = currentName;
-  });
+  updatedMerchants.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+  setMerchants(updatedMerchants);
 }
 
 function displayMerchantItems(event) {
   const merchantId = event.target.closest(".merchant-card").id.split("-")[1];
+  setupMerchantItemsView(merchantId);
+  fetchMerchantItems(merchantId);
+}
 
-  // had to make big ugly code to bypass state data (direct requesting)
-  const itemsView = document.querySelector("#items-view");
-  const merchantsView = document.querySelector("#merchants-view");
-  const dashboardView = document.querySelector("#dashboard-view");
+function setupMerchantItemsView(merchantId) {
+  const merchant = findMerchant(merchantId);
+  const views = {
+    itemsView: document.querySelector("#items-view"),
+    merchantsView: document.querySelector("#merchants-view"),
+    dashboardView: document.querySelector("#dashboard-view"),
+    formContainer: document.querySelector("#form-container"),
+  };
+
   const pageTitle = document.querySelector("#page-title");
   const showingText = document.querySelector("#showing-text");
   const addNewButton = document.querySelector("#add-new-button");
-  const formContainer = document.querySelector("#form-container");
-
-  const merchant = findMerchant(merchantId);
 
   pageTitle.textContent = "Items";
   showingText.textContent = `Items for ${
@@ -184,14 +194,18 @@ function displayMerchantItems(event) {
   }`;
   addNewButton.dataset.state = "item";
 
-  show([itemsView, addNewButton]);
-  hide([merchantsView, dashboardView, formContainer]);
+  show([views.itemsView, addNewButton]);
+  hide([views.merchantsView, views.dashboardView, views.formContainer]);
 
   removeActiveNavClass();
   document.querySelector("#items-nav").classList.add("active-nav");
 
-  itemsView.innerHTML =
+  views.itemsView.innerHTML =
     '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading merchant items...</p></div>';
+}
+
+function fetchMerchantItems(merchantId) {
+  const itemsView = document.querySelector("#items-view");
 
   fetchData(`merchants/${merchantId}/items`)
     .then((response) => {
@@ -210,24 +224,26 @@ function displayMerchantItems(event) {
 }
 
 export function showMerchantsView() {
-  const pageTitle = document.querySelector("#page-title");
-  const showingText = document.querySelector("#showing-text");
-  const addNewButton = document.querySelector("#add-new-button");
-  const merchantsView = document.querySelector("#merchants-view");
-  const itemsView = document.querySelector("#items-view");
-  const dashboardView = document.querySelector("#dashboard-view");
-  const formContainer = document.querySelector("#form-container");
-  const merchantsNavButton = document.querySelector("#merchants-nav");
+  const elements = {
+    pageTitle: document.querySelector("#page-title"),
+    showingText: document.querySelector("#showing-text"),
+    addNewButton: document.querySelector("#add-new-button"),
+    merchantsView: document.querySelector("#merchants-view"),
+    itemsView: document.querySelector("#items-view"),
+    dashboardView: document.querySelector("#dashboard-view"),
+    formContainer: document.querySelector("#form-container"),
+    merchantsNavButton: document.querySelector("#merchants-nav"),
+  };
 
-  pageTitle.textContent = "Merchants";
-  showingText.textContent = "All Merchants";
-  addNewButton.dataset.state = "merchant";
+  elements.pageTitle.textContent = "Merchants";
+  elements.showingText.textContent = "All Merchants";
+  elements.addNewButton.dataset.state = "merchant";
 
-  show([merchantsView, addNewButton]);
-  hide([itemsView, dashboardView, formContainer]);
+  show([elements.merchantsView, elements.addNewButton]);
+  hide([elements.itemsView, elements.dashboardView, elements.formContainer]);
 
   removeActiveNavClass();
-  merchantsNavButton.classList.add("active-nav");
+  elements.merchantsNavButton.classList.add("active-nav");
 
   displayMerchants(getMerchants());
 }
