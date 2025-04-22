@@ -128,7 +128,27 @@ export function showItemsView() {
   elements.showingText.textContent = "All Items";
   elements.addNewButton.dataset.state = "item";
 
+  const items = getItems();
+  let minPrice = 0;
+  let maxPrice = 1000;
+
+  if (items && items.length > 0) {
+    const prices = items.map((item) => parseFloat(item.attributes.unit_price));
+    minPrice = Math.floor(Math.min(...prices));
+    maxPrice = Math.ceil(Math.max(...prices));
+  }
+
   elements.sortControls.innerHTML = `
+    <div class="price-filter">
+      <div class="range-slider-container">
+        <label>Price Range: $<span id="min-price-display">${minPrice}</span> - $<span id="max-price-display">${maxPrice}</span></label>
+        <div class="sliders-container">
+          <input type="range" id="min-price-slider" class="price-slider" min="${minPrice}" max="${maxPrice}" value="${minPrice}" step="1">
+          <input type="range" id="max-price-slider" class="price-slider" min="${minPrice}" max="${maxPrice}" value="${maxPrice}" step="1">
+        </div>
+      </div>
+      <button id="reset-filters" class="btn-small">Reset</button>
+    </div>
     <div class="sort-container">
       <select id="name-sort" class="sort-select">
         <option value="">Sort by Name</option>
@@ -143,6 +163,15 @@ export function showItemsView() {
     </div>
   `;
 
+  const minPriceSlider = document.querySelector("#min-price-slider");
+  const maxPriceSlider = document.querySelector("#max-price-slider");
+  const minPriceDisplay = document.querySelector("#min-price-display");
+  const maxPriceDisplay = document.querySelector("#max-price-display");
+  const resetFiltersButton = document.querySelector("#reset-filters");
+
+  minPriceSlider.addEventListener("input", updatePriceFilters);
+  maxPriceSlider.addEventListener("input", updatePriceFilters);
+  resetFiltersButton.addEventListener("click", resetFilters);
   document.querySelector("#name-sort").addEventListener("change", sortItems);
   document.querySelector("#price-sort").addEventListener("change", sortItems);
 
@@ -162,11 +191,88 @@ export function showItemsView() {
   fetchAllItems(elements.itemsView);
 }
 
-function sortItems() {
+function updatePriceFilters() {
+  const minPriceSlider = document.querySelector("#min-price-slider");
+  const maxPriceSlider = document.querySelector("#max-price-slider");
+  const minPriceDisplay = document.querySelector("#min-price-display");
+  const maxPriceDisplay = document.querySelector("#max-price-display");
+
+  if (parseInt(minPriceSlider.value) > parseInt(maxPriceSlider.value)) {
+    minPriceSlider.value = maxPriceSlider.value;
+  }
+
+  minPriceDisplay.textContent = minPriceSlider.value;
+  maxPriceDisplay.textContent = maxPriceSlider.value;
+
+  filterItemsByPrice();
+}
+
+function resetFilters() {
+  const minPriceSlider = document.querySelector("#min-price-slider");
+  const maxPriceSlider = document.querySelector("#max-price-slider");
+
+  minPriceSlider.value = minPriceSlider.min;
+  maxPriceSlider.value = maxPriceSlider.max;
+
+  document.querySelector("#min-price-display").textContent = minPriceSlider.min;
+  document.querySelector("#max-price-display").textContent = maxPriceSlider.max;
+
+  document.querySelector("#name-sort").value = "";
+  document.querySelector("#price-sort").value = "";
+
+  displayItems(getItems());
+}
+
+function filterItemsByPrice() {
+  const minPrice = parseInt(document.querySelector("#min-price-slider").value);
+  const maxPrice = parseInt(document.querySelector("#max-price-slider").value);
+
   const nameSort = document.querySelector("#name-sort").value;
   const priceSort = document.querySelector("#price-sort").value;
 
-  let items = [...getItems()];
+  let filteredItems = getItems().filter((item) => {
+    const price = parseFloat(item.attributes.unit_price);
+    return price >= minPrice && price <= maxPrice;
+  });
+
+  if (nameSort === "asc") {
+    filteredItems.sort((a, b) =>
+      a.attributes.name.localeCompare(b.attributes.name)
+    );
+  } else if (nameSort === "desc") {
+    filteredItems.sort((a, b) =>
+      b.attributes.name.localeCompare(a.attributes.name)
+    );
+  }
+
+  if (priceSort === "asc") {
+    filteredItems.sort(
+      (a, b) =>
+        parseFloat(a.attributes.unit_price) -
+        parseFloat(b.attributes.unit_price)
+    );
+  } else if (priceSort === "desc") {
+    filteredItems.sort(
+      (a, b) =>
+        parseFloat(b.attributes.unit_price) -
+        parseFloat(a.attributes.unit_price)
+    );
+  }
+
+  displayItems(filteredItems);
+}
+
+function sortItems() {
+  const minPrice = parseInt(document.querySelector("#min-price-slider").value);
+  const maxPrice = parseInt(document.querySelector("#max-price-slider").value);
+
+  const nameSort = document.querySelector("#name-sort").value;
+  const priceSort = document.querySelector("#price-sort").value;
+
+  let items = getItems().filter((item) => {
+    const price = parseFloat(item.attributes.unit_price);
+    return price >= minPrice && price <= maxPrice;
+  });
 
   if (this.id === "name-sort" && this.value !== "" && priceSort !== "") {
     document.querySelector("#price-sort").value = "";

@@ -1,8 +1,10 @@
+/* Base container */
 .app-container {
   display: flex;
   min-height: 100vh;
 }
 
+/* Sidebar */
 .sidebar {
   width: 260px;
   background-color: var(--bg-sidebar);
@@ -18,6 +20,7 @@
   box-shadow: var(--shadow-regular);
 }
 
+/* Sidebar header */
 .sidebar-header {
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -50,17 +53,7 @@
   margin: 0;
 }
 
-.close-sidebar {
-  color: var(--text-light);
-  font-size: 1.2rem;
-  padding: 0.25rem;
-  display: none;
-}
-
-.close-sidebar:hover {
-  color: var(--text-white);
-}
-
+/* Navigation */
 .sidebar-nav {
   padding: 1rem 0;
   flex-grow: 1;
@@ -115,6 +108,7 @@
   background-color: var(--primary-hover);
 }
 
+/* Sidebar footer */
 .sidebar-footer {
   padding: 1rem;
   font-size: 0.75rem;
@@ -123,6 +117,19 @@
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* close sidebar (mobile only btw) */
+.close-sidebar {
+  color: var(--text-light);
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  display: none;
+}
+
+.close-sidebar:hover {
+  color: var(--text-white);
+}
+
+/* Main content */
 .main-content {
   flex-grow: 1;
   margin-left: 260px;
@@ -133,6 +140,7 @@
   flex-direction: column;
 }
 
+/* Top header */
 .top-header {
   height: 60px;
   background-color: var(--bg-white);
@@ -145,6 +153,7 @@
   z-index: 99;
 }
 
+/* Menu toggle (mobile only) */
 .menu-toggle {
   font-size: 1.25rem;
   color: var(--text-muted);
@@ -162,11 +171,13 @@
   color: var(--text-dark);
 }
 
+/* Content */
 .content-wrapper {
   padding: 1.5rem;
   flex-grow: 1;
 }
 
+/* Page header */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -187,6 +198,22 @@
   margin: 0.25rem 0 0;
 }
 
+/* Sidebar overlay (mobile only) */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+/* mobile layour (changing dimensions) */
 @media (max-width: 992px) {
   .sidebar {
     width: 240px;
@@ -222,20 +249,5 @@
   .form-row {
     flex-direction: column;
     gap: 1.25rem;
-  }
-
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    display: none;
-  }
-
-  .sidebar-overlay.active {
-    display: block;
   }
 }
