@@ -145,7 +145,7 @@ function showMerchantsView() {
   showingText.innerText = "All Merchants"
   addRemoveActiveNav(merchantsNavButton, itemsNavButton)
   addNewButton.dataset.state = 'merchant'
-  show([merchantsView, addNewButton])
+  show([merchantsView, addNewButton, sortButton])
   hide([itemsView])
   displayMerchants(merchants)
 }
@@ -155,14 +155,14 @@ function showItemsView() {
   addRemoveActiveNav(itemsNavButton, merchantsNavButton)
   addNewButton.dataset.state = 'item'
   show([itemsView])
-  hide([merchantsView, merchantForm, addNewButton])
+  hide([merchantsView, merchantForm, addNewButton, sortButton])
   displayItems(items)
 }
 
 function showMerchantItemsView(id, items) {
   showingText.innerText = `All Items for Merchant #${id}`
   show([itemsView])
-  hide([merchantsView, addNewButton])
+  hide([merchantsView, addNewButton, sortButton])
   addRemoveActiveNav(itemsNavButton, merchantsNavButton)
   addNewButton.dataset.state = 'item'
   displayItems(items)
@@ -171,6 +171,11 @@ function showMerchantItemsView(id, items) {
 // Functions that add data to the DOM
 function displayItems(items) {
   itemsView.innerHTML = ''
+  if (!items.length) {
+    itemsView.innerHTML = '<p class="no-items-message">No Items Yet For This Merchant</p>'
+    return
+  }
+
   let firstHundredItems = items.slice(0, 99)
   firstHundredItems.forEach(item => {
     let merchant = findMerchant(item.attributes.merchant_id).attributes.name
