@@ -19,28 +19,7 @@ export function displayMerchants(merchants = getMerchants()) {
   }
 
   merchants.forEach((merchant) => {
-    merchantsView.innerHTML += `
-      <div class="merchant-card" id="merchant-${merchant.id}">
-        <div class="card-header">
-          <h3 class="merchant-name">${merchant.attributes.name}</h3>
-          <div class="card-actions">
-            <button class="btn-icon edit-merchant" title="Edit Merchant"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon delete-merchant" title="Delete Merchant"><i class="fas fa-trash-alt"></i></button>
-          </div>
-        </div>
-        <div class="card-body">
-          <p>ID: ${merchant.id}</p>
-          ${
-            merchant.attributes.item_count
-              ? `<p>Items: ${merchant.attributes.item_count}</p>`
-              : ""
-          }
-        </div>
-        <div class="card-footer">
-          <button class="btn-secondary view-merchant-items">View Items</button>
-        </div>
-      </div>
-    `;
+    merchantsView.innerHTML += createMerchantCard(merchant);
   });
 
   merchantsView.addEventListener("click", handleMerchantClicks);
@@ -51,21 +30,10 @@ export function displayAddedMerchant(merchant) {
   const newMerchantCard = document.createElement("div");
   newMerchantCard.className = "merchant-card";
   newMerchantCard.id = `merchant-${merchant.id}`;
-  newMerchantCard.innerHTML = `
-    <div class="card-header">
-      <h3 class="merchant-name">${merchant.attributes.name}</h3>
-      <div class="card-actions">
-        <button class="btn-icon edit-merchant" title="Edit Merchant"><i class="fas fa-edit"></i></button>
-        <button class="btn-icon delete-merchant" title="Delete Merchant"><i class="fas fa-trash-alt"></i></button>
-      </div>
-    </div>
-    <div class="card-body">
-      <p>ID: ${merchant.id}</p>
-    </div>
-    <div class="card-footer">
-      <button class="btn-secondary view-merchant-items">View Items</button>
-    </div>
-  `;
+  newMerchantCard.innerHTML = createMerchantCard(merchant).replace(
+    /<div class="merchant-card"[^>]*>|<\/div>$/g,
+    ""
+  );
 
   merchantsView.appendChild(newMerchantCard);
 }
@@ -85,7 +53,12 @@ function handleMerchantClicks(event) {
       target.parentElement.classList.contains("edit-merchant"))
   ) {
     editMerchant(event);
-  } else if (target.classList.contains("view-merchant-items")) {
+  } else if (
+    target.classList.contains("view-merchant-items") ||
+    target.classList.contains("btn-view") ||
+    (target.parentElement &&
+      target.parentElement.classList.contains("view-merchant-items"))
+  ) {
     displayMerchantItems(event);
   }
 }
@@ -107,6 +80,33 @@ function deleteMerchant(event) {
         showStatus("Failed to delete. Try again later.", false);
       });
   }
+}
+
+function createMerchantCard(merchant) {
+  return `
+    <div class="merchant-card" id="merchant-${merchant.id}">
+      <div class="card-header">
+        <h3 class="merchant-name">${merchant.attributes.name}</h3>
+        <div class="card-actions">
+          <button class="btn-icon edit-merchant" title="Edit Merchant"><i class="fas fa-edit"></i></button>
+          <button class="btn-icon delete-merchant" title="Delete Merchant"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>ID: ${merchant.id}</p>
+        ${
+          merchant.attributes.item_count
+            ? `<p>Items: ${merchant.attributes.item_count}</p>`
+            : ""
+        }
+      </div>
+      <div class="card-footer">
+        <button class="btn-view view-merchant-items">
+          View Items
+        </button>
+      </div>
+    </div>
+  `;
 }
 
 function editMerchant(event) {
