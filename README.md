@@ -20,6 +20,8 @@ cd little-shop-fe`
 
 5. Access the application at http://localhost:5173
 
+<a href="https://github.com/cateprofir13/little_shop">link to backend</a>
+
 ### Preview of App:
 
 <img src="https://avatars.githubusercontent.com/u/61035563?v=4" alt="contrib.rocks image" width="128" height="128" />
