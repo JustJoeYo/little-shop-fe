@@ -7,7 +7,7 @@ Little shop is an admin portal that has an interface for an ecommerce platorm fo
 ### Installation Instructions:
 
 1. Clone the repository:
-`git clone https://github.com/yourusername/little-shop-proj.git
+`git clone https://github.com/JustJoeYo/little-shop-proj.git
 cd little-shop-proj/little-shop-fe`
 
 2. Install dependencies:
