@@ -45,6 +45,11 @@ We worked on this project over a span of 10 days, during which we introduced a r
   <img src="https://avatars.githubusercontent.com/u/53631725?v=4" alt="contrib.rocks image" width="128" height="128" />
 </a>
 
+Cate's [![Cate's LinkedIn][linkedin-shield]][linkedin-url3]
+Calvin's [![Calvin's LinkedIn][linkedin-shield]][linkedin-url2]
+Brady's [![Brady's LinkedIn][linkedin-shield]][linkedin-url4]
+Joe's [![Joe's LinkedIn][linkedin-shield]][linkedin-url]
+
 ### Learning Goals:
 
 (What were the learning goals of this project? What tech did you work with?)
@@ -54,7 +59,10 @@ We worked on this project over a span of 10 days, during which we introduced a r
 (What are 2-3 wins you have from this project? What were some challenges you faced - and how did you get over them?)
 
 
-Cate's [![Cate's LinkedIn][linkedin-shield]][linkedin-url3]
-Calvin's [![Calvin's LinkedIn][linkedin-shield]][linkedin-url2]
-Brady's [![Brady's LinkedIn][linkedin-shield]][linkedin-url4]
-Joe's [![Joe's LinkedIn][linkedin-shield]][linkedin-url]
+[contributors-shield]: https://img.shields.io/github/contributors/JustJoeYo/futbol.svg?style=for-the-badge
+[contributors-url]: https://github.com/JustJoeYo/futbol/graphs/contributors
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/joseph-samere-981a5b291/
+[linkedin-url2]: https://linkedin.com/in/calvinsuiter/
+[linkedin-url3]: https://linkedin.com/in/cate-profir/
+[linkedin-url4]: https://linkedin.com/in/bradyjblair/
