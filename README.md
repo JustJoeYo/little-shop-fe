@@ -24,7 +24,7 @@ cd little-shop-fe`
 
 ### Preview of App:
 
-<img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYm0zOGQ5cW80ZjBqOTBkZHI1ejhweDdrcXNmeDIxbGtyM2Jsa2o4NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UYCn3cJROy8r8bMD5P/giphy.gif" alt="image" />
+<img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYm0zOGQ5cW80ZjBqOTBkZHI1ejhweDdrcXNmeDIxbGtyM2Jsa2o4NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UYCn3cJROy8r8bMD5P/giphy.gif" alt="image" height="612" width="960" />
 
 ### Context:
 
