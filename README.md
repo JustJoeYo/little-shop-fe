@@ -3,7 +3,9 @@
 ### Abstract:
 
 (Briefly describe what you built and its features. What problem is the app solving? How does this application solve that problem?)
-Little shop is an admin portal that has an interface for an ecommerce platorm for our merchants. They can add and edit items and gives them a realtime visualization of the database. It comes with a search functionality and sort functions to help organize the view. Our app is solving the problem of letting the merchants manage their items from this portal in an easy user friendly way.
+
+Little Shop is an admin portal designed for merchants on our e-commerce platform. It provides an intuitive interface where they can easily add, edit, and manage their items. The app includes real-time database visualization, along with built-in search and sorting features to help organize inventory efficiently. Our goal is to simplify item management through a user-friendly experience tailored for merchants.
+
 ### Installation Instructions:
 
 1. Clone the repository:
