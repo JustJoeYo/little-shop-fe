@@ -29,7 +29,9 @@ cd little-shop-fe`
 ### Context:
 
 (Give some context for the project here. How long did you have to work on it? What specific work/improvements did you contribute to this FE application?)
+
 We worked on this project over a span of 10 days, during which we introduced a redesigned frontend that significantly improved upon the original. The updated design added new features like a search bar and sorting options, and included refreshed styling to enhance readability and create a cleaner, more user-friendly interface.
+
 ### Contributors:
 
 (Who worked on this application? Link to your GitHub. Consider also providing LinkedIn link)
