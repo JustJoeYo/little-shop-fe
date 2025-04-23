@@ -50,7 +50,6 @@ Joe's [![Joe's LinkedIn][linkedin-shield]][linkedin-url]
 
 ### Learning Goals:
 
-Learning Goals: 
 - Use ActiveRecord and SQL to write queries that deal with one-to-many database relationships  
 - Expose API endpoints to CRUD database resources  
 - Validate models and handle sad paths for invalid data input  
