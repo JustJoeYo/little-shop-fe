@@ -28,13 +28,22 @@ cd little-shop-fe`
 
 ### Context:
 
-(Give some context for the project here. How long did you have to work on it? What specific work/improvements did you contribute to this FE application?)
-
 We worked on this project over a span of 10 days, during which we introduced a redesigned frontend that significantly improved upon the original. The updated design added new features like a search bar and sorting options, and included refreshed styling to enhance readability and create a cleaner, more user-friendly interface.
 
 ### Contributors:
 
-(Who worked on this application? Link to your GitHub. Consider also providing LinkedIn link)
+<a href="https://github.com/cateprofir13">
+  <img src="https://avatars.githubusercontent.com/u/61035563?v=4" alt="contrib.rocks image" width="128" height="128" />
+</a>
+<a href="https://github.com/cdsuit00">
+  <img src="https://avatars.githubusercontent.com/u/197514624?v=4" alt="contrib.rocks image" width="128" height="128" />
+</a>
+<a href="https://github.com/bblair321">
+  <img src="https://avatars.githubusercontent.com/u/81390380?v=4" alt="contrib.rocks image" width="128" height="128" />
+</a>
+<a href="https://github.com/JustJoeYo">
+  <img src="https://avatars.githubusercontent.com/u/53631725?v=4" alt="contrib.rocks image" width="128" height="128" />
+</a>
 
 ### Learning Goals:
 
@@ -43,3 +52,9 @@ We worked on this project over a span of 10 days, during which we introduced a r
 ### Wins + Challenges:
 
 (What are 2-3 wins you have from this project? What were some challenges you faced - and how did you get over them?)
+
+
+Cate's [![Cate's LinkedIn][linkedin-shield]][linkedin-url3]
+Calvin's [![Calvin's LinkedIn][linkedin-shield]][linkedin-url2]
+Brady's [![Brady's LinkedIn][linkedin-shield]][linkedin-url4]
+Joe's [![Joe's LinkedIn][linkedin-shield]][linkedin-url]
