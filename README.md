@@ -63,8 +63,8 @@ Joe's [![Joe's LinkedIn][linkedin-shield]][linkedin-url]
 
 ### Wins + Challenges:
 
-(What are 2-3 wins you have from this project? What were some challenges you faced - and how did you get over them?) - delete this before commit
-
+Wins: Getting the backend working with our postman tests and succesfully getting the backend and frontend working together.
+A challenge we ran into was loading the data on the item and merchants cards. When making api calls it would take a little bit to populate the data. We overcame this by making a local database for the frontend.
 
 [contributors-shield]: https://img.shields.io/github/contributors/JustJoeYo/futbol.svg?style=for-the-badge
 [contributors-url]: https://github.com/JustJoeYo/futbol/graphs/contributors
