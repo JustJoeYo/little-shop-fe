@@ -234,25 +234,12 @@ function addRemoveActiveNav(nav1, nav2) {
   nav2.classList.remove('active-nav')
 }
 
+
 function filterByMerchant(merchantId) {
-  const specificMerchantItems = []
-
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].attributes.merchant_id === parseInt(merchantId)) {
-      specificMerchantItems.push(items[i])
-    }
-  }
-
-  return specificMerchantItems
+  return items.filter(item => item.attributes.merchant_id === parseInt(merchantId)) 
 }
 
-function findMerchant(id) {
-  let foundMerchant;
 
-  for (let i = 0; i < merchants.length; i++) {
-    if (parseInt(merchants[i].id) === parseInt(id)) {
-      foundMerchant = merchants[i]
-      return foundMerchant
-    }
-  }
+function findMerchant(id) {
+  return merchants.find(merchant => parseInt(merchant.id) === parseInt(id));
 }
