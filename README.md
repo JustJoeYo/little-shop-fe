@@ -2,8 +2,6 @@
 
 ### Abstract:
 
-(Briefly describe what you built and its features. What problem is the app solving? How does this application solve that problem?)
-
 Little shop is an admin portal that has an interface for an ecommerce platorm for our merchants. They can add and edit items and gives them a realtime visualization of the database. It comes with a search functionality and sort functions to help organize the view. Our app is solving the problem of letting the merchants manage their items from this portal in an easy user friendly way.
 
 ### Installation Instructions:
@@ -24,7 +22,7 @@ cd little-shop-fe`
 
 ### Preview of App:
 
-(Provide ONE gif or screenshot of your application - choose the "coolest" piece of functionality to show off. gifs preferred!)
+<img src="https://avatars.githubusercontent.com/u/61035563?v=4" alt="contrib.rocks image" width="128" height="128" />
 
 ### Context:
 
