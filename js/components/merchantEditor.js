@@ -6,6 +6,7 @@ import { getMerchants, setMerchants } from "../store/dataStore.js";
  * Edit merchantd name
  */
 function setupMerchantEditForm(element, currentName, id) {
+  element.dataset.originalName = currentName
   // Create edit form on el
   element.innerHTML = `
     <input type="text" class="edit-merchant-input-inline" value="${currentName}">
