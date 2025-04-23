@@ -6,7 +6,19 @@
 Little shop is an admin portal that has an interface for an ecommerce platorm for our merchants. They can add and edit items and gives them a realtime visualization of the database. It comes with a search functionality and sort functions to help organize the view. Our app is solving the problem of letting the merchants manage their items from this portal in an easy user friendly way.
 ### Installation Instructions:
 
-(What steps does a person have to take to get your app cloned down and running?)
+1. Clone the repository:
+`git clone https://github.com/yourusername/little-shop-proj.git
+cd little-shop-proj/little-shop-fe`
+
+2. Install dependencies:
+`npm install`
+
+3. Start the development server:
+`npm run dev`
+
+4. Ensure the backend API is running at the expected endpoint
+
+5. Access the application at http://localhost:5173
 
 ### Preview of App:
 
