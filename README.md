@@ -50,11 +50,21 @@ Joe's [![Joe's LinkedIn][linkedin-shield]][linkedin-url]
 
 ### Learning Goals:
 
-(What were the learning goals of this project? What tech did you work with?)
+Learning Goals: 
+- Use ActiveRecord and SQL to write queries that deal with one-to-many database relationships  
+- Expose API endpoints to CRUD database resources  
+- Validate models and handle sad paths for invalid data input  
+- Test both happy and sad path functionality based on JSON contracts  
+- Use MVC to organize code effectively, limiting data logic in controllers and serializers  
+- Track user stories with GitHub Projects  
+- Improve an existing frontend application by:
+  - Styling the user interface  
+  - Refactoring JavaScript code  
+  - Adding an additional frontend feature  
 
 ### Wins + Challenges:
 
-(What are 2-3 wins you have from this project? What were some challenges you faced - and how did you get over them?)
+(What are 2-3 wins you have from this project? What were some challenges you faced - and how did you get over them?) - delete this before commit
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/JustJoeYo/futbol.svg?style=for-the-badge
